@@ -11,7 +11,6 @@ CREATE OR REPLACE TABLE kullanicilar (
     email VARCHAR(255),
     phone_number VARCHAR(20)
 );
--------------------------------------KULLANICILAR TABLOSU----------------------
 
 -------------------------------------HAYVANLAR TABLOSU----------------------
 CREATE OR REPLACE TABLE hayvanlar (
@@ -25,7 +24,6 @@ CREATE OR REPLACE TABLE hayvanlar (
     hayvan_yaşı INTEGER,
 );
 alter table hayvanlar add constraint yaş_ck check (hayvan_yaşı > 0)
--------------------------------------HAYVANLAR TABLOSU----------------------
 
 
 -------------------------------------İLANLAR TABLOSU----------------------
@@ -34,7 +32,6 @@ CREATE OR REPLACE TABLE ilanlar (
     user_id INTEGER REFERENCES kullanicilar(user_id),
     hayvan_id INTEGER REFERENCES hayvanlar(hayvan_id)
 );
--------------------------------------İLANLAR TABLOSU----------------------
 
 -------------------------------------ÜRÜNLER TABLOSU----------------------
 CREATE OR REPLACE TABLE ürünler(
@@ -42,7 +39,6 @@ CREATE OR REPLACE TABLE ürünler(
     isim VARCHAR(100),
     fiyat INTEGER DEFAULT 50
 );
--------------------------------------ÜRÜNLER TABLOSU----------------------
 
 
 -------------------------------------BAŞVURULAN TABLOSU----------------------
@@ -51,7 +47,6 @@ CREATE OR REPLACE TABLE basvurulan (
     ilan_id INTEGER REFERENCES ilanlarim(ilan_id),
     PRIMARY KEY (basvuran_id, ilan_id)
 );
--------------------------------------BAŞVURULAN TABLOSU----------------------
 
 
 -------------------------------------ÜRÜN SAHİPLİK TABLOSU----------------------
@@ -59,14 +54,12 @@ CREATE OR REPLACE TABLE ürün_sahiplik (
     ürün_id REFERENCES ürünler(ürün_id),
     user_id INTEGER REFERENCES kullanicilar(user_id) ON DELETE CASCADE
 );
--------------------------------------ÜRÜN SAHİPLİK TABLOSU----------------------
 
 
 -------------------------------------CREATE VIEW--------------------
 create view hayvan as
 select hayvan_id, hayvan_ismi, hayvan_türü, sahip_id
 from hayvanlar
--------------------------------------CREATE VIEW----------------------
 
 
 -------------------------------------LOGIN FONKSİYONU----------------------
@@ -82,11 +75,8 @@ BEGIN
     FROM kullanicilar
     WHERE user_name = username AND user_password = userpassword;
 
-    -- Eğer giriş bilgileri doğruysa user_id'yi döndür, aksi halde NULL döndür
-    RETURN COALESCE(user_id_result, NULL);
 END;
 $$ LANGUAGE plpgsql;
--------------------------------------LOGIN FONKSİYONU----------------------
 
 ----------------------------------UPDATE TRIGGER-------------------
 CREATE OR REPLACE FUNCTION update_trigger()
@@ -104,7 +94,6 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER before_update_trigger
 BEFORE UPDATE ON kullanicilar
 FOR EACH ROW EXECUTE FUNCTION update_trigger();
-----------------------------------UPDATE TRIGGER-------------------
 
 ----------------------------------INSERT TRIGGER-------------------
 CREATE OR REPLACE FUNCTION insertTrigger() RETURNS TRIGGER AS $$
@@ -122,9 +111,6 @@ CREATE TRIGGER t_insert
 BEFORE INSERT
 ON hayvanlar
 FOR EACH ROW EXECUTE PROCEDURE insertTrigger();
-----------------------------------INSERT TRIGGER-------------------
-
-
 
 ----------------------------------LISTING FONKSIYONU-------------------
 CREATE TYPE listing_record AS (
@@ -164,14 +150,12 @@ BEGIN
     LOOP
         FETCH main_cursor INTO tmp_record;
         EXIT WHEN NOT FOUND;
-
         RETURN NEXT tmp_record;
     END LOOP;
     CLOSE main_cursor;
     RETURN;
 END;
 $$ LANGUAGE plpgsql;
-----------------------------------LISTING FONKSIYONU-------------------
 
 ----------------------------------AGGREGATE FONKSIYON------------------
 CREATE OR REPLACE FUNCTION itemCount(minn INTEGER)
@@ -191,7 +175,6 @@ BEGIN
     HAVING COUNT(us.ürün_id) > minn;
 END;
 $$ LANGUAGE plpgsql;
-----------------------------------AGGREGATE FONKSIYON------------------
 
 
 
