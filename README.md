@@ -1,3 +1,6 @@
+
+Pet adoption program with postgresql database and java
+
 -------------------------------------KULLANICILAR TABLOSU----------------------
 CREATE SEQUENCE user_id_seq START 1;
 
